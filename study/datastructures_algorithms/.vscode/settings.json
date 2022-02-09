@@ -1,0 +1,5 @@
+{
+	"debugVisualizer.js.customScriptPaths": [
+		"${workspaceFolder}/custom-visualizer.js",
+	]
+}
