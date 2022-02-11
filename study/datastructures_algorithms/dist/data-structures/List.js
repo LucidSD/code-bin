@@ -23,7 +23,6 @@ class AbstractList extends collection_1.AbstractCollection {
     }
 }
 exports.AbstractList = AbstractList;
-// class LinkedList<T> extends AbstractList<T> implements
 class Vector extends AbstractList {
     constructor(c) {
         super();

@@ -28,7 +28,7 @@ export declare class Stack<T> extends Vector<T> implements IStack<T> {
 interface IQueue<T> extends ICollection<T> {
     add(e: T): void;
     peek(): T;
-    remove(o?: any): T | boolean;
+    remove(o?: any): void;
 }
 export interface Deque<T> extends IQueue<T> {
     addFirst(element: T): void;

@@ -47,9 +47,9 @@ export interface IList<T> extends ICollection<T> {
 }
 
 export interface IQueue<T> extends ICollection<T> {
-  add(e: T): void;
+  add(element: T): void;
   peek(): T;
-  remove(o?: any): T | boolean;
+  remove(object?: any): void;
 }
 
 export interface IStack<T> extends ICollection<T> {

@@ -4,10 +4,6 @@ import { LinkedList } from '../data-structures/lists/LinkedList';
 
 const linkedList = new LinkedList();
 debugger;
-linkedList.insertAtTail('1');
-linkedList.insertAtTail('1');
-linkedList.insertAtTail('1');
-linkedList.insertAtTail('1');
 
 const stack = new LinkedList();
 

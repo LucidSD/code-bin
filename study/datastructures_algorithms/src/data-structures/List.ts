@@ -32,7 +32,6 @@ export abstract class AbstractList<T> extends AbstractCollection<T> implements I
   public abstract set(index: number, element: T): void;
 }
 
-// class LinkedList<T> extends AbstractList<T> implements
 class Vector<T> extends AbstractList<T> implements IList<T> {
   private elements: T[] = [];
 
@@ -132,7 +131,7 @@ export class Stack<T> extends Vector<T> implements IStack<T> {
 interface IQueue<T> extends ICollection<T> {
   add(e: T): void;
   peek(): T;
-  remove(o?: any): T | boolean;
+  remove(o?: any): void;
 }
 
 export interface Deque<T> extends IQueue<T> {
