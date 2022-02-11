@@ -1,5 +1,15 @@
 {
-	"debugVisualizer.js.customScriptPaths": [
-		"${workspaceFolder}/custom-visualizer.js",
-	]
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": ["javascript"],
+  "editor.minimap.enabled": false,
+  "git.enabled": false,
+  "typescript.tsc.autoDetect": "off",
+  "debugVisualizer.js.customScriptPaths": [
+    "${workspaceFolder}/custom-visualizer.js"
+  ],
+  "typescript.updateImportsOnFileMove.enabled": "prompt",
+  "tasksStatusbar.taskLabelFilter": "dev",
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

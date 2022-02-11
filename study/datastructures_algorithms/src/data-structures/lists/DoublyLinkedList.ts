@@ -2,16 +2,12 @@ declare interface Node<T> {
   val: T;
   next: Node<T> | null;
   prev: Node<T> | null;
-  child: Node<T> | null;
 }
 
-interface ILayeredLinkedList<T> {
+interface IDoublyLinkedList<T> {
   insertAtHead(data: T): void;
   insertAtTail(data: T): void;
   insertAtIndex(index: number, data: T): void;
-  insertChild(node: Node<T>, val: T): void;
-  insertChildAtIndex(index: number, val: T): void;
-  insertAll(arr: Array<T>): void;
   getHead(): Node<T> | null;
   getTail(): Node<T> | null;
   getAtIndex(index: number): Node<T> | null;
@@ -21,24 +17,21 @@ interface ILayeredLinkedList<T> {
   size(): number;
 }
 
-export default class LayeredLinkedList<T> implements ILayeredLinkedList<T> {
+export default class DoublyLinkedList<T> implements IDoublyLinkedList<T> {
   private _size: number;
 
   private head: Node<T> | null;
 
   private tail: Node<T> | null;
 
-  public constructor(c?: Array<T>) {
+  public constructor() {
     this._size = 0;
     this.head = null;
     this.tail = null;
-    if (c instanceof Array) {
-      this.insertAll(c);
-    }
   }
 
   insertAtHead(val: T): void {
-    const newNode = new LayeredLinkedList.Node(val);
+    const newNode = new DoublyLinkedList.Node(val);
     newNode.next = this.head;
     if (this.head) {
       this.head.prev = newNode;
@@ -51,11 +44,10 @@ export default class LayeredLinkedList<T> implements ILayeredLinkedList<T> {
   }
 
   insertAtTail(val: T): void {
-    const newNode = new LayeredLinkedList.Node(val);
-    const currNode = this.tail;
+    const newNode = new DoublyLinkedList.Node(val);
+    const currNode = this.getTail();
     if (!currNode) {
       this.head = newNode;
-      this.tail = newNode;
     } else {
       currNode.next = newNode;
       newNode.prev = currNode;
@@ -77,7 +69,7 @@ export default class LayeredLinkedList<T> implements ILayeredLinkedList<T> {
         this.insertAtTail(val);
         return;
       }
-      const newNode = new LayeredLinkedList.Node(val);
+      const newNode = new DoublyLinkedList.Node(val);
       const currNode = this.getAtIndex(index);
       if (!currNode) {
         return;
@@ -93,38 +85,6 @@ export default class LayeredLinkedList<T> implements ILayeredLinkedList<T> {
     } catch (error) {
       console.error(error);
     }
-  }
-
-  insertAll(arr: T[]): void {
-    arr.forEach((el) => {
-      this.insertAtTail(el);
-    });
-  }
-
-  insertChild(currNode: Node<T>, val: T): void {
-    if (currNode.child) {
-      throw new Error('Node already has a child');
-    }
-    if (val instanceof LayeredLinkedList.Node) {
-      currNode.child = val;
-    } else {
-      currNode.child = new LayeredLinkedList.Node(val);
-    }
-    this._size += 1;
-  }
-
-  insertChildAtIndex(index: number, val: T): void {
-    if (index > this._size || index < 0) {
-      return;
-    }
-    const currNode = this.getAtIndex(index);
-    if (currNode && currNode.child) {
-      throw new Error('Node already has a child');
-    }
-    if (!currNode) {
-      throw new Error('Node not valid');
-    }
-    this.insertChild(currNode, val);
   }
 
   getHead(): Node<T> | null {
@@ -208,33 +168,35 @@ export default class LayeredLinkedList<T> implements ILayeredLinkedList<T> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
-  private static Node = class LinkedListNode<T> implements Node<T> {
+  private static Node = class _Node<T> implements Node<T> {
     public val: T;
 
     public next: Node<T> | null;
 
     public prev: Node<T> | null;
 
-    public child: Node<T> | null;
-
     public constructor(val: T) {
       this.val = val;
       this.next = null;
       this.prev = null;
-      this.child = null;
     }
   };
 }
 
-const linkedList = new LayeredLinkedList();
+const linkedList = new DoublyLinkedList();
+debugger;
+linkedList.insertAtTail('8');
 linkedList.insertAtTail('1');
 linkedList.insertAtTail('2');
 linkedList.insertAtTail('3');
-
-const linkedList2 = new LayeredLinkedList();
-linkedList2.insertAtTail('4');
-linkedList2.insertAtTail('5');
-linkedList2.insertAtTail('6');
-const node = linkedList2.getHead();
-linkedList.insertChildAtIndex(2, node);
-linkedList2.insertAtTail('7');
+linkedList.insertAtHead('4');
+linkedList.insertAtTail('5');
+linkedList.insertAtTail('6');
+linkedList.insertAtTail('8');
+linkedList.removeAtHead();
+linkedList.removeAtTail();
+linkedList.removeAtIndex(1);
+linkedList.removeAtIndex(4);
+linkedList.insertAtIndex(4, '7');
+linkedList.insertAtIndex(3, '9');
+linkedList.insertAtIndex(1, '10');
