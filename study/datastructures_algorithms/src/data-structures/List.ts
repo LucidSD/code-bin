@@ -130,9 +130,9 @@ export class Stack<T> extends Vector<T> implements IStack<T> {
 }
 
 interface IQueue<T> extends ICollection<T> {
-  add(e: T): void;
+  add(element: T): void;
   peek(): T;
-  remove(o?: any): T | boolean;
+  remove(object?: any): T | void;
 }
 
 export interface Deque<T> extends IQueue<T> {

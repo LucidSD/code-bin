@@ -36,7 +36,7 @@ class AbstractCollection {
     isEmpty() {
         return this.size() <= 0;
     }
-    remove(o) {
+    remove(object) {
         const it = this.iterator();
         while (it.hasNext()) {
             if (it.next() === o) {
@@ -81,6 +81,9 @@ class AbstractCollection {
                 break;
             }
         }
+    }
+    toString() {
+        return JSON.stringify(this.toArray());
     }
 }
 exports.AbstractCollection = AbstractCollection;

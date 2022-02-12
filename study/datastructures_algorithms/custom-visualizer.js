@@ -37,11 +37,9 @@ module.exports = (register, helpers) => {
       // 	&& data.constructor.name !== 'DoublyLinkedList') {
       //   return;
       // }
-      console.log(data);
-      console.log(helpers.tryEval([
-
-        'data.constructor.name',
-      ]));
+      // if (data typeof Object) {
+      //   console.log('OBJECT ALERT!!!!');
+      // }
       collector.addExtraction({
         priority: 1000,
         id: 'LinkedList',
@@ -57,7 +55,7 @@ module.exports = (register, helpers) => {
             },
             (i) => ({
               id: i.id,
-              label: i.val || 'test',
+              label: JSON.stringify(i.val),
               color: 'lightblue',
               edges: [{
                 to: i.next,

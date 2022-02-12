@@ -47,9 +47,9 @@ export interface IList<T> extends ICollection<T> {
 }
 
 export interface IQueue<T> extends ICollection<T> {
-  add(e: T): void;
+  add(element: T): void;
   peek(): T;
-  remove(o?: any): T | boolean;
+  remove(object?: any): void;
 }
 
 export interface IStack<T> extends ICollection<T> {
@@ -94,7 +94,7 @@ export abstract class AbstractCollection<T> implements ICollection<T> {
     return this.size() <= 0;
   }
 
-  public remove(o: any): any {
+  public remove(object: any): any {
     const it: Iterator<any> = this.iterator();
 
     while (it.hasNext()) {
@@ -153,5 +153,9 @@ export abstract class AbstractCollection<T> implements ICollection<T> {
         break;
       }
     }
+  }
+
+  public toString(): string {
+    return JSON.stringify(this.toArray());
   }
 }
