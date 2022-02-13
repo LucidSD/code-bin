@@ -1,7 +1,5 @@
 export interface Iterator<T> {
     next(): any;
-    hasNext(): boolean;
-    remove(): void;
 }
 export declare function isCollection(c: any): boolean;
 export interface ObjectIterator<T> extends Iterator<T> {

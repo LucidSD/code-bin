@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Stack = exports.AbstractList = void 0;
 const collection_1 = require("./collection");
 class AbstractList extends collection_1.AbstractCollection {
     checkRange(index) {

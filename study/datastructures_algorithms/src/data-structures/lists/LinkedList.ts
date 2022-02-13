@@ -9,6 +9,31 @@ declare interface Node<T> {
 }
 
 export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
+  public set(index: number, element: T): void {
+    throw new Error('Method not implemented.');
+  }
+  getFirst(): T {
+    throw new Error('Method not implemented.');
+  }
+  getLast(): T {
+    throw new Error('Method not implemented.');
+  }
+  pop(): T {
+    throw new Error('Method not implemented.');
+  }
+  push(element: T): void {
+    throw new Error('Method not implemented.');
+  }
+  removeFirst(): void {
+    throw new Error('Method not implemented.');
+  }
+  removeLast(): void {
+    throw new Error('Method not implemented.');
+  }
+  peek(): T {
+    throw new Error('Method not implemented.');
+  }
+
   protected length: number;
 
   protected head: Node<T> | null;
@@ -25,6 +50,7 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
       this.addAll(collection);
     }
   }
+
 
   get(index: number): T {
     let currNode = this.head;
@@ -71,8 +97,8 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
       this.addLast(element);
       return;
     }
-    let currNode = this.head;
-    let prevNode = currNode;
+    let currNode: Node<T> | null = this.head;
+    let prevNode: Node<T> | null = currNode;
     const newNode = new LinkedList.Node(element);
     if (index && this.checkRange(index)) {
       let cursor = 0;
@@ -86,8 +112,81 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
       }
     }
     newNode.next = currNode;
-    prevNode.next = newNode;
+    if (prevNode) {
+      prevNode.next = newNode;
+    }
     this.length += 1;
+  }
+
+  private *generator(): Generator<T> {
+    let current: Node<T> | null = this.head;
+    while(current) {
+      yield current.val;
+      current = current.next;
+    }
+  }
+
+  public testLoop(): void {
+    let it = this.generator();
+    for(let i of it) {
+      console.log('wow')
+      console.log(i);
+    }
+  }
+
+  public testIterator(): ObjectIterator<T> {
+    const that = this;
+    return new class implements ObjectIterator<T> {
+      
+      private it: Generator;
+      private current: any;
+      constructor() {
+        this.it = that.generator();
+        this.current = this.it.next();
+      }
+      next(): any {
+        let value = this.current.value;
+        this.current = this.it.next();
+        return value;
+      }
+      hasNext(): boolean {
+        return (!this.current.done);
+      }
+      remove(): void {
+        throw new Error('Method not implemented.');
+      }
+    }
+
+  }
+
+
+  public iterator(): ObjectIterator<T> {
+    const that = this;
+    let cursor: Node<T> | null = this.head;
+
+    const tail = this.tail;
+
+    // eslint-disable-next-line new-parens
+    return new class implements ObjectIterator<T> {
+      next(): T {
+        if (!cursor || (cursor.next === tail)) {
+          return <any>null;
+        }
+        cursor = cursor.next;
+
+        return cursor!.val;
+      }
+
+      hasNext(): boolean {
+        return !cursor || (cursor !== tail && cursor.next !== tail);
+      }
+
+      remove(): void {
+        const tmp = cursor!.prev;
+        // that.removeNode(cursor);
+        cursor = tmp;
+      }
+    };
   }
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -119,11 +218,8 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
 }
 
 export class DoublyLinkedList<T> extends LinkedList<T> {
-  private prev: Node<T> | null;
-
-  constructor() {
-    super();
-    this.prev = null;
+  public set(index: number, element: T): void {
+    throw new Error('Method not implemented.');
   }
 
   getFirst(): T {
@@ -152,6 +248,13 @@ export class DoublyLinkedList<T> extends LinkedList<T> {
 
   peek(): T {
     throw new Error('Method not implemented.');
+  }
+
+  private prev: Node<T> | null;
+
+  constructor() {
+    super();
+    this.prev = null;
   }
 
   public addFirst(element: T): void {
@@ -195,7 +298,7 @@ export class DoublyLinkedList<T> extends LinkedList<T> {
     if (index && this.checkRange(index)) {
       let cursor = 0;
       while (currNode && currNode !== this.tail) {
-        currNode = currNode.next;
+        currNode = currNode.next!;
         if (index && index === cursor + 1) {
           break;
         }
@@ -210,48 +313,19 @@ export class DoublyLinkedList<T> extends LinkedList<T> {
     this.length += 1;
   }
 
-  public iterator(): ObjectIterator<T> {
-    const that = this;
-    let cursor: Node<T> | null = this.head;
-
-    const tail = this.tail;
-
-    // eslint-disable-next-line new-parens
-    return new class implements ObjectIterator<T> {
-      next(): T {
-        if (!cursor || (cursor.next === tail)) {
-          return <any>null;
-        }
-        cursor = cursor.next;
-
-        return cursor.val;
-      }
-
-      hasNext(): boolean {
-        return cursor !== tail && cursor.next !== tail;
-      }
-
-      remove(): void {
-        if (mod === null) {
-          throw new IllegalStateException();
-        }
-
-        const tmp = cursor.prev;
-        that.removeNode(cursor);
-        cursor = tmp;
-
-        mod = <any>null;
-      }
-    };
-  }
 }
-const linkedList = new DoublyLinkedList();
-linkedList.add({ test: 'test' });
+const linkedList = new LinkedList();
 linkedList.add(2);
 linkedList.add(3);
 linkedList.add(4);
-linkedList.add(5, 0);
+console.log(linkedList.toArray());
 linkedList.add(6);
+let it = linkedList.testIterator();
+console.log(it.next());
+console.log(it.next())
+console.log(it.next())
+console.log(it.next())
+
 debugger;
 
 // clear

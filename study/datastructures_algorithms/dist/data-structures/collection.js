@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AbstractCollection = exports.isCollection = void 0;
 function isCollection(c) {
     if (!(c instanceof AbstractCollection)) {
         throw new TypeError(`Expect type ICollection, but got ${typeof c}`);
@@ -39,7 +38,7 @@ class AbstractCollection {
     remove(object) {
         const it = this.iterator();
         while (it.hasNext()) {
-            if (it.next() === o) {
+            if (it.next() === 'butt') {
                 it.remove();
                 return true;
             }

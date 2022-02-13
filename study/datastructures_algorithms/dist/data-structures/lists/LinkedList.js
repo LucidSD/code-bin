@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DoublyLinkedList = void 0;
 const List_1 = require("../List");
 const collection_1 = require("../collection");
 class LinkedList extends List_1.AbstractList {
@@ -12,6 +11,30 @@ class LinkedList extends List_1.AbstractList {
         if (collection && !collection_1.isCollection(collection)) {
             this.addAll(collection);
         }
+    }
+    set(index, element) {
+        throw new Error('Method not implemented.');
+    }
+    getFirst() {
+        throw new Error('Method not implemented.');
+    }
+    getLast() {
+        throw new Error('Method not implemented.');
+    }
+    pop() {
+        throw new Error('Method not implemented.');
+    }
+    push(element) {
+        throw new Error('Method not implemented.');
+    }
+    removeFirst() {
+        throw new Error('Method not implemented.');
+    }
+    removeLast() {
+        throw new Error('Method not implemented.');
+    }
+    peek() {
+        throw new Error('Method not implemented.');
     }
     get(index) {
         let currNode = this.head;
@@ -72,8 +95,67 @@ class LinkedList extends List_1.AbstractList {
             }
         }
         newNode.next = currNode;
-        prevNode.next = newNode;
+        if (prevNode) {
+            prevNode.next = newNode;
+        }
         this.length += 1;
+    }
+    *generator() {
+        let current = this.head;
+        while (current) {
+            yield current.val;
+            current = current.next;
+        }
+    }
+    testLoop() {
+        let it = this.generator();
+        for (let i of it) {
+            console.log('wow');
+            console.log(i);
+        }
+    }
+    testIterator() {
+        const that = this;
+        return new class {
+            constructor() {
+                this.it = that.generator();
+                this.current = this.it.next();
+            }
+            next() {
+                let value = this.current.value;
+                this.current = this.it.next();
+                return value;
+            }
+            hasNext() {
+                return (!this.current.done);
+            }
+            remove() {
+                throw new Error('Method not implemented.');
+            }
+        };
+    }
+    iterator() {
+        const that = this;
+        let cursor = this.head;
+        const tail = this.tail;
+        // eslint-disable-next-line new-parens
+        return new class {
+            next() {
+                if (!cursor || (cursor.next === tail)) {
+                    return null;
+                }
+                cursor = cursor.next;
+                return cursor.val;
+            }
+            hasNext() {
+                return !cursor || (cursor !== tail && cursor.next !== tail);
+            }
+            remove() {
+                const tmp = cursor.prev;
+                // that.removeNode(cursor);
+                cursor = tmp;
+            }
+        };
     }
     size() {
         return this.length;
@@ -98,6 +180,9 @@ class DoublyLinkedList extends LinkedList {
     constructor() {
         super();
         this.prev = null;
+    }
+    set(index, element) {
+        throw new Error('Method not implemented.');
     }
     getFirst() {
         throw new Error('Method not implemented.');
@@ -175,42 +260,19 @@ class DoublyLinkedList extends LinkedList {
         newNode.prev = prevNode;
         this.length += 1;
     }
-    iterator() {
-        const that = this;
-        let cursor = this.head;
-        const tail = this.tail;
-        // eslint-disable-next-line new-parens
-        return new class {
-            next() {
-                if (!cursor || (cursor.next === tail)) {
-                    return null;
-                }
-                cursor = cursor.next;
-                return cursor.val;
-            }
-            hasNext() {
-                return cursor !== tail && cursor.next !== tail;
-            }
-            remove() {
-                if (mod === null) {
-                    throw new IllegalStateException();
-                }
-                const tmp = cursor.prev;
-                that.removeNode(cursor);
-                cursor = tmp;
-                mod = null;
-            }
-        };
-    }
 }
 exports.DoublyLinkedList = DoublyLinkedList;
-const linkedList = new DoublyLinkedList();
-linkedList.add({ test: 'test' });
+const linkedList = new LinkedList();
 linkedList.add(2);
 linkedList.add(3);
 linkedList.add(4);
-linkedList.add(5, 0);
+console.log(linkedList.toArray());
 linkedList.add(6);
+let it = linkedList.testIterator();
+console.log(it.next());
+console.log(it.next());
+console.log(it.next());
+console.log(it.next());
 debugger;
 // clear
 // foreach

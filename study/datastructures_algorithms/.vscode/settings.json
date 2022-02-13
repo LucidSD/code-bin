@@ -3,7 +3,7 @@
     "source.fixAll.eslint": true
   },
   "eslint.validate": ["javascript"],
-  "editor.minimap.enabled": false,
+  "editor.minimap.enabled": true,
   "git.enabled": false,
   "typescript.tsc.autoDetect": "off",
   "debugVisualizer.js.customScriptPaths": [
