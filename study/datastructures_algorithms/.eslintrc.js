@@ -35,6 +35,8 @@ module.exports = {
     'no-param-reassign': 'off',
     'class-methods-use-this': 'off',
     "prefer-destructuring": 'off',
+    "no-extra-parens": "off",
+    "@typescript-eslint/no-extra-parens": ["error"]
   },
   settings: {
     'import/resolver': {

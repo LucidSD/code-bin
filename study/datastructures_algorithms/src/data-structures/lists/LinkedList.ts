@@ -1,5 +1,8 @@
+import { link } from 'fs';
+import { runInThisContext } from 'vm';
 import { Deque, AbstractList } from '../List';
 import { isCollection, ICollection, ObjectIterator } from '../collection';
+import { NoSuchElementException, IndexOutOfBoundsException, MethodNotImplementedException } from '../../exceptions';
 
 declare interface Node<T> {
   val: T;
@@ -10,28 +13,89 @@ declare interface Node<T> {
 
 export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
   public set(index: number, element: T): void {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
+
+  /*
+    Returns the first element or throws exeption if null
+  */
   getFirst(): T {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
+
   getLast(): T {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
+
   pop(): T {
-    throw new Error('Method not implemented.');
+    this.removeFirst();
   }
+
   push(element: T): void {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
+
   removeFirst(): void {
-    throw new Error('Method not implemented.');
+    const currNode = this.head;
+    if (!currNode) {
+      throw new NoSuchElementException();
+    }
+    if (!currNode.next) {
+      this.tail = null;
+      this.head = null;
+    } else {
+      this.head = currNode.next;
+    }
+    this.length -= 1;
   }
+
   removeLast(): void {
-    throw new Error('Method not implemented.');
+    if (!this.tail) {
+      throw new NoSuchElementException();
+    }
+    this.removeNode();
   }
+
+  private removeHeadNode() {
+    if (!this.head) {
+      throw new NoSuchElementException();
+    }
+  }
+
+  private removeNode(targetNode: Node<T>) {
+    if (!this.head) {
+      throw new NoSuchElementException();
+    }
+    let currNode = this.head;
+    let prevNode = currNode;
+
+    while (currNode !== targetNode && currNode.next) {
+      prevNode = currNode;
+      currNode = currNode.next;
+    }
+    if (currNode.next) {
+      prevNode.next = currNode.next;
+    }
+    if (currNode === this.tail) {
+      this.tail = prevNode;
+    }
+    if (currNode === this.head) {
+      this.head = currNode.next;
+    }
+    this.length -= 1;
+  }
+
+  clear(): void {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+
+  /*
+    Returns the first element or null if it doesn't exist
+  */
   peek(): T {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
 
   protected length: number;
@@ -50,7 +114,6 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
       this.addAll(collection);
     }
   }
-
 
   get(index: number): T {
     let currNode = this.head;
@@ -118,73 +181,42 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
     this.length += 1;
   }
 
-  private *generator(): Generator<T> {
-    let current: Node<T> | null = this.head;
-    while(current) {
-      yield current.val;
-      current = current.next;
-    }
-  }
-
-  public testLoop(): void {
-    let it = this.generator();
-    for(let i of it) {
-      console.log('wow')
-      console.log(i);
-    }
-  }
-
-  public testIterator(): ObjectIterator<T> {
-    const that = this;
-    return new class implements ObjectIterator<T> {
-      
-      private it: Generator;
-      private current: any;
-      constructor() {
-        this.it = that.generator();
-        this.current = this.it.next();
-      }
-      next(): any {
-        let value = this.current.value;
-        this.current = this.it.next();
-        return value;
-      }
-      hasNext(): boolean {
-        return (!this.current.done);
-      }
-      remove(): void {
-        throw new Error('Method not implemented.');
-      }
-    }
-
-  }
-
-
   public iterator(): ObjectIterator<T> {
+    const head = this.head;
     const that = this;
-    let cursor: Node<T> | null = this.head;
 
-    const tail = this.tail;
+    function* generator(): Generator<Node<T>> {
+      let current: Node<T> | null = head;
+      while (current) {
+        yield current;
+        current = current.next;
+      }
+    }
 
     // eslint-disable-next-line new-parens
     return new class implements ObjectIterator<T> {
-      next(): T {
-        if (!cursor || (cursor.next === tail)) {
-          return <any>null;
-        }
-        cursor = cursor.next;
+      private it: Generator<Node<T>>;
 
-        return cursor!.val;
+      private current;
+
+      constructor() {
+        this.it = generator();
+        this.current = this.it.next();
+      }
+
+      next(): T {
+        const value: T = this.current.value.val;
+        this.current = this.it.next();
+        return value;
       }
 
       hasNext(): boolean {
-        return !cursor || (cursor !== tail && cursor.next !== tail);
+        return !this.current.done;
       }
 
       remove(): void {
-        const tmp = cursor!.prev;
-        // that.removeNode(cursor);
-        cursor = tmp;
+        // throw new MethodNotImplementedException();
+        that.removeNode(this.current.value);
       }
     };
   }
@@ -219,35 +251,35 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
 
 export class DoublyLinkedList<T> extends LinkedList<T> {
   public set(index: number, element: T): void {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
 
   getFirst(): T {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
 
   getLast(): T {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
 
   pop(): T {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
 
   push(element: T): void {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
 
   removeFirst(): void {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
 
   removeLast(): void {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
 
   peek(): T {
-    throw new Error('Method not implemented.');
+    throw new MethodNotImplementedException();
   }
 
   private prev: Node<T> | null;
@@ -312,21 +344,18 @@ export class DoublyLinkedList<T> extends LinkedList<T> {
     newNode.prev = prevNode;
     this.length += 1;
   }
-
 }
 const linkedList = new LinkedList();
 linkedList.add(2);
 linkedList.add(3);
 linkedList.add(4);
 console.log(linkedList.toArray());
-linkedList.add(6);
-let it = linkedList.testIterator();
+const it = linkedList.iterator();
 console.log(it.next());
-console.log(it.next())
-console.log(it.next())
-console.log(it.next())
-
-debugger;
-
+console.log(it.hasNext());
+console.log(it.next());
+console.log(it.hasNext());
+console.log(it.next());
+console.log(it.hasNext());
 // clear
 // foreach

@@ -1,211 +1,175 @@
-declare interface Node<T> {
-  val: T;
-  next: Node<T> | null;
-  prev: Node<T> | null;
-  child: Node<T> | null;
-}
+import { LinkedList } from './lists/LinkedList';
 
-interface ILayeredLinkedList<T> {
-  insertAtHead(data: T): void;
-  insertAtTail(data: T): void;
-  insertAtIndex(index: number, data: T): void;
-  insertChild(node: Node<T>, val: T): void;
-  insertChildAtIndex(index: number, val: T): void;
-  insertAll(arr: Array<T>): void;
-  getHead(): Node<T> | null;
-  getTail(): Node<T> | null;
-  getAtIndex(index: number): Node<T> | null;
-  removeAtHead(): void;
-  removeAtTail(): void;
-  removeAtIndex(index: number): void;
-  size(): number;
-}
+export default class LayeredLinkedList<T> extends LinkedList<T> {
+  // insertAtHead(val: T): void {
+  //   const newNode = new LayeredLinkedList.Node(val);
+  //   newNode.next = this.head;
+  //   if (this.head) {
+  //     this.head.prev = newNode;
+  //   }
+  //   this.head = newNode;
+  //   if (!this.tail) {
+  //     this.tail = this.head;
+  //   }
+  //   this._size += 1;
+  // }
 
-export default class LayeredLinkedList<T> implements ILayeredLinkedList<T> {
-  private _size: number;
+  // insertAtTail(val: T): void {
+  //   const newNode = new LayeredLinkedList.Node(val);
+  //   const currNode = this.tail;
+  //   if (!currNode) {
+  //     this.head = newNode;
+  //     this.tail = newNode;
+  //   } else {
+  //     currNode.next = newNode;
+  //     newNode.prev = currNode;
+  //   }
+  //   this.tail = newNode;
+  //   this._size += 1;
+  // }
 
-  private head: Node<T> | null;
+  // insertAtIndex(index: number, val: T): void {
+  //   try {
+  //     if (index > this._size || index < 0) {
+  //       throw new Error('Not a valid index');
+  //     }
+  //     if (index === 0) {
+  //       this.insertAtHead(val);
+  //       return;
+  //     }
+  //     if (index === this._size) {
+  //       this.insertAtTail(val);
+  //       return;
+  //     }
+  //     const newNode = new LayeredLinkedList.Node(val);
+  //     const currNode = this.getAtIndex(index);
+  //     if (!currNode) {
+  //       return;
+  //     }
+  //     const prevNode = this.getAtIndex(index - 1);
+  //     if (prevNode) {
+  //       prevNode.next = newNode;
+  //       newNode.prev = prevNode;
+  //     }
+  //     newNode.next = currNode;
+  //     currNode.prev = newNode;
+  //     this._size += 1;
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
-  private tail: Node<T> | null;
+  // insertAll(arr: T[]): void {
+  //   arr.forEach((el) => {
+  //     this.insertAtTail(el);
+  //   });
+  // }
 
-  public constructor(c?: Array<T>) {
-    this._size = 0;
-    this.head = null;
-    this.tail = null;
-    if (c instanceof Array) {
-      this.insertAll(c);
-    }
-  }
+  // insertChild(currNode: Node<T>, val: T): void {
+  //   if (currNode.child) {
+  //     throw new Error('Node already has a child');
+  //   }
+  //   if (val instanceof LayeredLinkedList.Node) {
+  //     currNode.child = val;
+  //   } else {
+  //     currNode.child = new LayeredLinkedList.Node(val);
+  //   }
+  //   this._size += 1;
+  // }
 
-  insertAtHead(val: T): void {
-    const newNode = new LayeredLinkedList.Node(val);
-    newNode.next = this.head;
-    if (this.head) {
-      this.head.prev = newNode;
-    }
-    this.head = newNode;
-    if (!this.tail) {
-      this.tail = this.head;
-    }
-    this._size += 1;
-  }
+  // insertChildAtIndex(index: number, val: T): void {
+  //   if (index > this._size || index < 0) {
+  //     return;
+  //   }
+  //   const currNode = this.getAtIndex(index);
+  //   if (currNode && currNode.child) {
+  //     throw new Error('Node already has a child');
+  //   }
+  //   if (!currNode) {
+  //     throw new Error('Node not valid');
+  //   }
+  //   this.insertChild(currNode, val);
+  // }
 
-  insertAtTail(val: T): void {
-    const newNode = new LayeredLinkedList.Node(val);
-    const currNode = this.tail;
-    if (!currNode) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      currNode.next = newNode;
-      newNode.prev = currNode;
-    }
-    this.tail = newNode;
-    this._size += 1;
-  }
+  // getHead(): Node<T> | null {
+  //   return this.head;
+  // }
 
-  insertAtIndex(index: number, val: T): void {
-    try {
-      if (index > this._size || index < 0) {
-        throw new Error('Not a valid index');
-      }
-      if (index === 0) {
-        this.insertAtHead(val);
-        return;
-      }
-      if (index === this._size) {
-        this.insertAtTail(val);
-        return;
-      }
-      const newNode = new LayeredLinkedList.Node(val);
-      const currNode = this.getAtIndex(index);
-      if (!currNode) {
-        return;
-      }
-      const prevNode = this.getAtIndex(index - 1);
-      if (prevNode) {
-        prevNode.next = newNode;
-        newNode.prev = prevNode;
-      }
-      newNode.next = currNode;
-      currNode.prev = newNode;
-      this._size += 1;
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  // getTail(): Node<T> | null {
+  //   if (this._size <= 0) {
+  //     return null;
+  //   }
+  //   return this.tail;
+  // }
 
-  insertAll(arr: T[]): void {
-    arr.forEach((el) => {
-      this.insertAtTail(el);
-    });
-  }
+  // getAtIndex(index: number): Node<T> | null {
+  //   if (index > this._size || index < 0) {
+  //     return null;
+  //   }
+  //   let currNode = this.head;
+  //   for (let i = 0; i < index && currNode; i++) {
+  //     currNode = currNode.next;
+  //   }
+  //   return currNode;
+  // }
 
-  insertChild(currNode: Node<T>, val: T): void {
-    if (currNode.child) {
-      throw new Error('Node already has a child');
-    }
-    if (val instanceof LayeredLinkedList.Node) {
-      currNode.child = val;
-    } else {
-      currNode.child = new LayeredLinkedList.Node(val);
-    }
-    this._size += 1;
-  }
+  // removeAtHead(): void {
+  //   if (!this.head) {
+  //     return;
+  //   }
+  //   if (this.head.next) {
+  //     this.head = this.head.next;
+  //     this.head.prev = null;
+  //   } else {
+  //     this.head = null;
+  //   }
+  //   this._size -= 1;
+  // }
 
-  insertChildAtIndex(index: number, val: T): void {
-    if (index > this._size || index < 0) {
-      return;
-    }
-    const currNode = this.getAtIndex(index);
-    if (currNode && currNode.child) {
-      throw new Error('Node already has a child');
-    }
-    if (!currNode) {
-      throw new Error('Node not valid');
-    }
-    this.insertChild(currNode, val);
-  }
+  // removeAtTail(): void {
+  //   if (!this.head || !this.tail) {
+  //     return;
+  //   }
+  //   if (this._size === 1) {
+  //     this.tail = null;
+  //   }
+  //   if (this.tail && this.tail.prev) {
+  //     this.tail = this.tail.prev;
+  //     this.tail.next = null;
+  //   }
+  //   this._size -= 1;
+  // }
 
-  getHead(): Node<T> | null {
-    return this.head;
-  }
+  // removeAtIndex(index: number): void {
+  //   if (index > this._size || index < 0) {
+  //     return;
+  //   }
+  //   if (index === 0) {
+  //     this.removeAtHead();
+  //     return;
+  //   }
+  //   if (index === this._size - 1) {
+  //     this.removeAtTail();
+  //     return;
+  //   }
+  //   const currNode = this.getAtIndex(index);
+  //   const prevNode = this.getAtIndex(index - 1);
+  //   if (!currNode) {
+  //     return;
+  //   }
+  //   if (prevNode) {
+  //     prevNode.next = currNode.next;
+  //   }
+  //   if (currNode.next) {
+  //     currNode.next.prev = prevNode;
+  //   }
 
-  getTail(): Node<T> | null {
-    if (this._size <= 0) {
-      return null;
-    }
-    return this.tail;
-  }
+  //   this._size -= 1;
+  // }
 
-  getAtIndex(index: number): Node<T> | null {
-    if (index > this._size || index < 0) {
-      return null;
-    }
-    let currNode = this.head;
-    for (let i = 0; i < index && currNode; i++) {
-      currNode = currNode.next;
-    }
-    return currNode;
-  }
-
-  removeAtHead(): void {
-    if (!this.head) {
-      return;
-    }
-    if (this.head.next) {
-      this.head = this.head.next;
-      this.head.prev = null;
-    } else {
-      this.head = null;
-    }
-    this._size -= 1;
-  }
-
-  removeAtTail(): void {
-    if (!this.head || !this.tail) {
-      return;
-    }
-    if (this._size === 1) {
-      this.tail = null;
-    }
-    if (this.tail && this.tail.prev) {
-      this.tail = this.tail.prev;
-      this.tail.next = null;
-    }
-    this._size -= 1;
-  }
-
-  removeAtIndex(index: number): void {
-    if (index > this._size || index < 0) {
-      return;
-    }
-    if (index === 0) {
-      this.removeAtHead();
-      return;
-    }
-    if (index === this._size - 1) {
-      this.removeAtTail();
-      return;
-    }
-    const currNode = this.getAtIndex(index);
-    const prevNode = this.getAtIndex(index - 1);
-    if (!currNode) {
-      return;
-    }
-    if (prevNode) {
-      prevNode.next = currNode.next;
-    }
-    if (currNode.next) {
-      currNode.next.prev = prevNode;
-    }
-
-    this._size -= 1;
-  }
-
-  size(): number {
-    return this._size;
-  }
+  // size(): number {
+  //   return this._size;
+  // }
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
   private static Node = class LinkedListNode<T> implements Node<T> {

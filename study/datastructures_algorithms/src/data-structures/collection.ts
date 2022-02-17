@@ -1,8 +1,11 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface Iterator<T> {
   next(): any;
-}
 
+  hasNext(): boolean;
+
+  remove(): void;
+}
 
 export function isCollection(c: any): boolean {
   if (!(c instanceof AbstractCollection)) {
@@ -95,7 +98,7 @@ export abstract class AbstractCollection<T> implements ICollection<T> {
     const it: Iterator<any> = this.iterator();
 
     while (it.hasNext()) {
-      if (it.next() === 'butt') {
+      if (it.next() === object) {
         it.remove();
         return true;
       }
