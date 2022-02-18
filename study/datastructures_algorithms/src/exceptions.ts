@@ -12,6 +12,12 @@ export class IndexOutOfBoundsException extends Exception {
   }
 }
 
+export class IllegalStateException extends Exception {
+  constructor(message: string = '') {
+    super('IllegalStateException', message);
+  }
+}
+
 export class NoSuchElementException extends Exception {
   constructor(message: string = '') {
     super('NoSuchElementException', message);
@@ -19,7 +25,7 @@ export class NoSuchElementException extends Exception {
 }
 
 export class MethodNotImplementedException extends Exception {
-  constructor(message: string = '') {
+  constructor(message: string = 'Method Not Implemented') {
     super('MethodNotImplementedException', message);
   }
 }
