@@ -1,3 +1,4 @@
+import { IndexOutOfBoundsException } from '../exceptions';
 import {
   AbstractCollection, IList, Iterator, ICollection, ObjectIterator,
 } from './collection';
@@ -5,7 +6,7 @@ import {
 export abstract class AbstractList<T> extends AbstractCollection<T> implements IList<T> {
   protected checkRange(index: number): boolean {
     if (index >= this.size() || index < 0) {
-      throw new Error('Index is out of bounds');
+      throw new IndexOutOfBoundsException(`Index: ${index} Size: ${this.size()}`);
     }
     return true;
   }

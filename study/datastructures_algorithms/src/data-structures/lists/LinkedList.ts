@@ -1,8 +1,6 @@
-import { link } from 'fs';
-import { runInThisContext } from 'vm';
-import { Deque, AbstractList } from '../List';
-import { isCollection, ICollection, ObjectIterator } from '../collection';
-import { NoSuchElementException, IndexOutOfBoundsException, MethodNotImplementedException } from '../../exceptions';
+import {  Deque, AbstractList } from '../List';
+import { isCollection, ICollection, ObjectIterator, AbstractCollection, IList } from '../collection';
+import { NoSuchElementException, IllegalStateException, MethodNotImplementedException } from '../../exceptions';
 
 declare interface Node<T> {
   val: T;
@@ -11,7 +9,90 @@ declare interface Node<T> {
   testtString(): string;
 }
 
-export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
+export class ArrayList<T> extends AbstractList<T> implements IList<T> {
+  public elements: T[] = [];
+
+  constructor(c: T[]) {
+    super();
+    if(c && c instanceof Array) {
+      this.arrayToList(c);
+    }
+    if(c && c instanceof AbstractCollection) {
+      this.addAll(c);
+    }
+  }
+  public arrayToList(arr: T[]): void {
+    this.elements = arr;
+  }
+  public get(index: number): T {
+    throw new MethodNotImplementedException();
+  }
+  public set(index: number, element: T): void {
+    throw new MethodNotImplementedException();
+  }
+  public iterator(): ObjectIterator<T> {
+    const that = this;
+    let index = 0;
+
+    function* generator(): Generator<T> {
+      while(index < that.elements.length) {
+        yield that.elements[index];
+        index++;
+      }
+      
+    }
+
+    // eslint-disable-next-line new-parens
+    return new class implements ObjectIterator<T> {
+      private it: Generator<T>;
+
+      private current: any;
+
+      constructor() {
+        this.it = generator();
+        this.current = this.it.next();
+      }
+
+      next(): T {
+        const value: T = this.current.value;
+        this.current = this.it.next();
+        return value;
+      }
+
+      hasNext(): boolean {
+        return !this.current.done;
+      }
+
+      remove(): void {
+        throw new MethodNotImplementedException();
+        // that.removeNode(this.current.value);
+      }
+    };
+  }
+  public size(): number {
+    return this.elements.length;
+  }
+
+}
+
+export class LinkedList<T> extends AbstractList<T> implements Deque<T> {
+
+  protected length: number;
+
+  public head: Node<T> | null;
+
+  public tail: Node<T> | null;
+
+  constructor(collection?: ICollection<T>) {
+    super();
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+    if (collection && isCollection(collection)) {
+      this.addAll(collection);
+    }
+  }
+
   public set(index: number, element: T): void {
     throw new MethodNotImplementedException();
   }
@@ -20,7 +101,10 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
     Returns the first element or throws exeption if null
   */
   getFirst(): T {
-    throw new MethodNotImplementedException();
+    if(!this.head) {
+      throw new IllegalStateException();
+    }
+    return this.head.val;
   }
 
   getLast(): T {
@@ -28,7 +112,7 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
   }
 
   pop(): T {
-    this.removeFirst();
+    return this!.head!.val
   }
 
   push(element: T): void {
@@ -53,13 +137,14 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
     if (!this.tail) {
       throw new NoSuchElementException();
     }
-    this.removeNode();
+    this.removeNode(this.tail);
   }
 
   private removeHeadNode() {
     if (!this.head) {
       throw new NoSuchElementException();
     }
+    this.removeNode(this.head);
   }
 
   private removeNode(targetNode: Node<T>) {
@@ -78,6 +163,7 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
     }
     if (currNode === this.tail) {
       this.tail = prevNode;
+      prevNode.next = null;
     }
     if (currNode === this.head) {
       this.head = currNode.next;
@@ -98,35 +184,16 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
     throw new MethodNotImplementedException();
   }
 
-  protected length: number;
-
-  protected head: Node<T> | null;
-
-  protected tail: Node<T> | null;
-
-  constructor(collection?: ICollection<T>) {
-    super();
-    this.head = null;
-    this.tail = null;
-    this.length = 0;
-
-    if (collection && !isCollection(collection)) {
-      this.addAll(collection);
-    }
-  }
-
   get(index: number): T {
+    this.checkRange(index);
     let currNode = this.head;
-    const tail = this.tail;
-    let cursor = 0;
-    while (currNode && currNode !== tail) {
-      currNode = currNode.next;
-      if (index === cursor && currNode) {
-        return currNode.val;
-      }
-      cursor += 1;
+    if(!currNode) {
+      throw new IllegalStateException();
     }
-    return <any>null;
+    for(let i = 0; i < index && currNode.next; i++) {
+      currNode = currNode.next;
+    }
+    return currNode.val;
   }
 
   public addFirst(element: T): void {
@@ -197,7 +264,7 @@ export default class LinkedList<T> extends AbstractList<T> implements Deque<T> {
     return new class implements ObjectIterator<T> {
       private it: Generator<Node<T>>;
 
-      private current;
+      private current: any;
 
       constructor() {
         this.it = generator();
@@ -344,18 +411,5 @@ export class DoublyLinkedList<T> extends LinkedList<T> {
     newNode.prev = prevNode;
     this.length += 1;
   }
-}
-const linkedList = new LinkedList();
-linkedList.add(2);
-linkedList.add(3);
-linkedList.add(4);
-console.log(linkedList.toArray());
-const it = linkedList.iterator();
-console.log(it.next());
-console.log(it.hasNext());
-console.log(it.next());
-console.log(it.hasNext());
-console.log(it.next());
-console.log(it.hasNext());
-// clear
-// foreach
+} 
+
