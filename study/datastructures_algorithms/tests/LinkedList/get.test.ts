@@ -42,3 +42,17 @@ describe('LinkedList.getFirst', () => {
     });
 
 });
+
+describe('LinkedList.getLast', () => {
+    it('Returns correct data at tail', () => {
+        const list = new LinkedList(new ArrayList([1,2,3]));
+        const value = list.getLast();
+        expect(value).toBe(3);
+    });
+
+    it('IllegalStateException if empty list', () => {
+        const list = new LinkedList();
+        expect(() => { list.getLast() }).toThrow(IllegalStateException);
+    });
+
+});

@@ -38,6 +38,7 @@ export interface ICollection<T> extends Iterable<T> {
   remove(index: number): void;
   size(): number;
   toArray(): T[];
+  clear(): void;
 }
 
 export interface IList<T> extends ICollection<T> {

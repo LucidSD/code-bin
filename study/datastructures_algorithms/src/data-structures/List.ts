@@ -30,6 +30,15 @@ export abstract class AbstractList<T> extends AbstractCollection<T> implements I
     }
   }
 
+  public clear(): void {
+    const it: Iterator<T> = this.iterator();
+
+    while (it.hasNext()) {
+      it.next();
+      it.remove();
+    }
+  }
+
   public abstract set(index: number, element: T): void;
 }
 
@@ -143,6 +152,6 @@ export interface Deque<T> extends IQueue<T> {
   getLast(): T;
   pop(): T;
   push(element: T): void;
-  removeFirst(): void;
-  removeLast(): void;
+  removeFirst(): T;
+  removeLast(): T;
 }
