@@ -20,12 +20,10 @@ export abstract class AbstractList<T> extends AbstractCollection<T> implements I
     const it: Iterator<T> = this.iterator();
 
     while (it.hasNext()) {
-      it.next();
-
       if (index === cursor) {
         it.remove();
       }
-
+      it.next();
       cursor += 1;
     }
   }
@@ -42,7 +40,6 @@ export abstract class AbstractList<T> extends AbstractCollection<T> implements I
   public abstract set(index: number, element: T): void;
 }
 
-// class LinkedList<T> extends AbstractList<T> implements
 class Vector<T> extends AbstractList<T> implements IList<T> {
   private elements: T[] = [];
 

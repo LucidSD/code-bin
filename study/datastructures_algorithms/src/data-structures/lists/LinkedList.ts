@@ -37,40 +37,27 @@ export class ArrayList<T> extends AbstractList<T> implements IList<T> {
   }
 
   public iterator(): ObjectIterator<T> {
+    const elements = this.elements;
     const that = this;
     let index = 0;
 
-    function* generator(): Generator<T> {
-      while (index < that.elements.length) {
-        yield that.elements[index];
-        index += 1;
-      }
-    }
-
     // eslint-disable-next-line new-parens
     return new class implements ObjectIterator<T> {
-      private it: Generator<T>;
-
-      private current: any;
-
-      constructor() {
-        this.it = generator();
-        this.current = this.it.next();
-      }
-
       next(): T {
-        const value: T = this.current.value;
-        this.current = this.it.next();
-        return value;
+        if (!this.hasNext()) {
+          throw new IllegalStateException();
+        }
+        const tmp = index;
+        index += 1;
+        return elements[tmp];
       }
 
       hasNext(): boolean {
-        return !this.current.done;
+        return index < elements.length;
       }
 
       remove(): void {
-        throw new MethodNotImplementedException();
-        // that.removeNode(this.current.value);
+        that.elements.splice(index - 1, 1);
       }
     };
   }
@@ -81,6 +68,29 @@ export class ArrayList<T> extends AbstractList<T> implements IList<T> {
 }
 
 export class LinkedList<T> extends AbstractList<T> implements Deque<T> {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  public static Node = class LinkedListNode<T> implements Node<T> {
+    public val: T;
+
+    public next: Node<T> | null;
+
+    public prev: Node<T> | null;
+
+    public constructor(val: T) {
+      this.val = val;
+      this.next = null;
+      this.prev = null;
+    }
+
+    public toString(): string {
+      return 'butt';
+    }
+
+    public testtString(): string {
+      return 'butt';
+    }
+  };
+
   protected length: number;
 
   public head: Node<T> | null;
@@ -98,7 +108,18 @@ export class LinkedList<T> extends AbstractList<T> implements Deque<T> {
   }
 
   public set(index: number, element: T): void {
-    throw new MethodNotImplementedException();
+    // throw new MethodNotImplementedException();
+    this.checkRange(index);
+    let cursor = 0;
+    let currNode = this.head;
+    while (currNode) {
+      if (index === cursor) {
+        currNode.val = element;
+        return;
+      }
+      currNode = currNode.next;
+      cursor += 1;
+    }
   }
 
   /*
@@ -119,12 +140,13 @@ export class LinkedList<T> extends AbstractList<T> implements Deque<T> {
   }
 
   pop(): T {
-    // this.removeFirst();
-    throw new MethodNotImplementedException();
+    return this.removeFirst();
+    // throw new MethodNotImplementedException();
   }
 
   push(element: T): void {
-    throw new MethodNotImplementedException();
+    // throw new MethodNotImplementedException();
+    this.addLast(element);
   }
 
   removeFirst(): T {
@@ -149,13 +171,6 @@ export class LinkedList<T> extends AbstractList<T> implements Deque<T> {
     }
     this.removeNode(tail);
     return tail.val;
-  }
-
-  private removeHeadNode() {
-    if (!this.head) {
-      throw new NoSuchElementException();
-    }
-    this.removeNode(this.head);
   }
 
   private removeNode(targetNode: Node<T>) {
@@ -188,11 +203,12 @@ export class LinkedList<T> extends AbstractList<T> implements Deque<T> {
     this.length = 0;
   }
 
-  /*
-    Returns the first element or null if it doesn't exist
-  */
   peek(): T {
     throw new MethodNotImplementedException();
+    if (!this.tail) {
+      throw new IllegalStateException();
+    }
+    return this.tail!.val;
   }
 
   get(index: number): T {
@@ -221,10 +237,11 @@ export class LinkedList<T> extends AbstractList<T> implements Deque<T> {
     const newNode = new LinkedList.Node(element);
     if (!this.tail) {
       this.addFirst(element);
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
+      return;
     }
+    this.tail.next = newNode;
+    this.tail = newNode;
+
     this.length += 1;
   }
 
@@ -260,67 +277,35 @@ export class LinkedList<T> extends AbstractList<T> implements Deque<T> {
   }
 
   public iterator(): ObjectIterator<T> {
-    const head = this.head;
     const that = this;
-
-    function* generator(): Generator<Node<T>> {
-      let current: Node<T> | null = head;
-      while (current) {
-        yield current;
-        current = current.next;
-      }
-    }
+    let cursor: Node<T> | null = this.head;
+    let prevNode: Node<T> | null = cursor;
 
     // eslint-disable-next-line new-parens
     return new class implements ObjectIterator<T> {
-      private it: Generator<Node<T>>;
-
-      private current: any;
-
-      constructor() {
-        this.it = generator();
-        this.current = this.it.next();
-      }
-
       next(): T {
-        const value: T = this.current.value.val;
-        this.current = this.it.next();
-        return value;
+        if (!this.hasNext()) {
+          throw new NoSuchElementException();
+        }
+        const currNode = cursor;
+        prevNode = cursor;
+        cursor = cursor!.next;
+        return currNode!.val;
       }
 
       hasNext(): boolean {
-        return !this.current.done;
+        return cursor !== null;
       }
 
       remove(): void {
-        // throw new MethodNotImplementedException();
-        that.removeNode(this.current.value);
+        if (!cursor || !prevNode) {
+          throw new IllegalStateException();
+        }
+        that.removeNode(cursor);
+        cursor = prevNode;
       }
     };
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  public static Node = class LinkedListNode<T> implements Node<T> {
-    public val: T;
-
-    public next: Node<T> | null;
-
-    public prev: Node<T> | null;
-
-    public constructor(val: T) {
-      this.val = val;
-      this.next = null;
-      this.prev = null;
-    }
-
-    public toString(): string {
-      return 'butt';
-    }
-
-    public testtString(): string {
-      return 'butt';
-    }
-  };
 
   public size(): number {
     return this.length;
@@ -423,3 +408,8 @@ export class DoublyLinkedList<T> extends LinkedList<T> {
     this.length += 1;
   }
 }
+
+const list = new LinkedList();
+// list.addLast(1);
+// list.addLast(2);
+// list.addLast(3);
